@@ -312,7 +312,19 @@ public class Agent1 extends AbstractNegotiationParty
 	@Override
 	public AbstractUtilitySpace estimateUtilitySpace()
 	{
-		return super.estimateUtilitySpace();
+		Domain domain = getDomain();
+		BidRanking bidRanking = getUserModel().getBidRanking();
+		LinearProgrammingEstimation linearProgrammingEstimation = new LinearProgrammingEstimation(domain, bidRanking);
+		AdditiveUtilitySpaceFactory additiveUtilitySpaceFactory;
+
+		try {
+			additiveUtilitySpaceFactory = linearProgrammingEstimation.Estimation();
+		} catch (Exception e){
+			e.printStackTrace();
+			additiveUtilitySpaceFactory = new AdditiveUtilitySpaceFactory(domain);
+			additiveUtilitySpaceFactory.estimateUsingBidRanks(bidRanking);
+		}
+		return additiveUtilitySpaceFactory.getUtilitySpace();
 	}
 
 
