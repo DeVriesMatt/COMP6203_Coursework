@@ -119,13 +119,13 @@ public class Agent1 extends AbstractNegotiationParty
 	public Action chooseAction(List<Class<? extends Action>> possibleActions)
 	{
 		this.counterOffersMade++;
-		BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
-		Bid maxBidPossible = maxBidDetailsPossible.getBid(); // TODO: ? Check in Lab if this is okay ??
+		// BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
+		Bid maxUtilBidElic = getUserModel().getBidRanking().getMaximalBid(); // TODO: ? Check in Lab if this is okay ??
 		// SortedOutcomeSpace uses estimateUtilitySpace
 
 		// Hardheadedness: for first X% of the time, offer maximum utility bid.
 		if (isWithinMaxUtilityBidRange()) {
-			Bid maxUtilityBid = maxBidPossible; // TODO: replace by elicitation. Might be done. Need to ask in lab
+			Bid maxUtilityBid = maxUtilBidElic; // TODO: replace by elicitation. Might be done. Need to ask in lab
 									// Not sure how to get max utility bid estimateUtilitySpace
 									// estimateUtilitySpace.getMaxUtilityBid() not working
 			try {
