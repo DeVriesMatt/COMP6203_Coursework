@@ -26,7 +26,6 @@ public class OpponentModel {
      */
     public EvaluatorDiscrete[] getIssuesList() { return this.issuesList; }
 
-
     /**
      * Get total issues
      * @return issue list
@@ -37,9 +36,7 @@ public class OpponentModel {
      * Get issue ID list
      * @return issue ID list
      */
-    public int[] getIssueIds() {
-        return this.issueIdList;
-    }
+    public int[] getIssueIds() { return this.issueIdList; }
 
     public OpponentModel(Bid bid) {
 
@@ -51,19 +48,20 @@ public class OpponentModel {
         this.historyBid = new BidHistory();
         this.historyUtility = new ArrayList<>();
 
-        for (int i = 0; i < getTotalIssues(); i++) {
-            int issueID = bid.getIssues().get(i).getNumber();
-            getIssueIds()[i] = issueID;
-        }
+        // Append the bid's issue number to the issueList
+        for (int i = 0; i < getTotalIssues(); i++)
+            this.issueIdList[i] = bid.getIssues().get(i).getNumber();;
 
         this.issuesList = new EvaluatorDiscrete[getTotalIssues()];
+
+        // Generate evaluators for each issue
         for (int i = 0; i < getTotalIssues(); i++) {
             this.issuesList[i] = new EvaluatorDiscrete();
         }
     }
 
     /**
-     * Add bid to bid history of opponent
+     * Add opponent's bid to its bid history
      */
     public void addBid(Bid bid) {
 
@@ -72,75 +70,85 @@ public class OpponentModel {
     }
 
     /**
-     * Set issue weights and values
+     * Set the weights of the issues based on the frequency
      */
     public void setWeightValues() {
 
-        HashMap<ValueDiscrete, Double> weightValues = this.setWeightFreqAnalysis();
+        HashMap<ValueDiscrete, Double> frequencyValues = this.getWeightFreqAnalysis();
+        int turns = this.historyBid.size(); // number of turns based on the size of the history
 
-        int turns = this.historyBid.size();
-
-        double[] w = new double[this.issueTotal];
-        double weightTotal = 0.0;
+        double[] weightValue = new double[this.issueTotal]; // weight
+        double weightValueTotal = 0.0; // Total weight
 
         for (int i = 0; i < this.issueTotal; i++) {
 
-            // get frequency
-            for (ValueDiscrete val : weightValues.keySet()) {
+            // Get the frequency of the issues
+            for (ValueDiscrete val : frequencyValues.keySet()) {
                 try {
 
-                    double freq = weightValues.get(val);
-                    w[i] +=  Math.pow(freq, 2) / Math.pow(turns, 2);
+                    double freq = frequencyValues.get(val);
+
+                    // WHY????
+
+                    // The weight equals to:
+                    // (frequency number to the power of 2) divided by (number of turns to the power of 2)
+                    weightValue[i] +=  Math.pow(freq, 2) / Math.pow(turns, 2);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            weightTotal += w[i];
+
+            // Add weight value to the total weights
+            weightValueTotal += weightValue[i];
         }
 
-        for (int i = 0; i < issueTotal; i++) {
+        // Normalised weight by dividing the weight value by the total weight value
+        for (int i = 0; i < this.issueTotal; i++) {
 
-            double normalizedWeight = w[i] / weightTotal;
-            this.issuesList[i].setWeight(normalizedWeight);
+            this.issuesList[i].setWeight(weightValue[i] / weightValueTotal); // set weight to normalised weights
         }
-
     }
 
     /**
-     * Use the frequency analysis to set the weights of each issues
+     * Use frequency analysis to set the weights of each issues
      *
-     * @return issue values
+     * @return the hashmap containing the frequency to be used for weight computation
      */
-    private HashMap<ValueDiscrete, Double> setWeightFreqAnalysis() {
+    private HashMap<ValueDiscrete, Double> getWeightFreqAnalysis() {
 
         HashMap<ValueDiscrete, Double> issueValues = new HashMap<ValueDiscrete, Double>();
 
+        // iterate over the issue list
         for (int i = 0; i < this.issueTotal; i++) {
 
-            // Compute for the frequency of the issues
+            // Compute for the frequency of the issues's value found in the history bid
             for (int j = 0; j < this.historyBid.size(); j++) {
 
+                // Get discrete value of the current issue in the bid history
                 ValueDiscrete value = (ValueDiscrete) (this.historyBid.getHistory().get(j).getBid()
                         .getValue(this.issueIdList[i]));
 
-                if (issueValues.containsKey(value)) issueValues.put(value, issueValues.get(value) + 1);
+                // Increment the frequency to one if the value of the issue already exists in the hash map
+                if (issueValues.containsKey(value))
+                    issueValues.put(value, issueValues.get(value) + 1);
 
-                else issueValues.put(value, 1.0);
+                // If not, add the value to the hash map and set it to 1
+                else
+                    issueValues.put(value, 1.0);
             }
 
-            // Take the greatest number of times issue value was used
-            double frequency = 0.0;
-            for (ValueDiscrete value : issueValues.keySet())
-                if (issueValues.get(value) > frequency) frequency = issueValues.get(value);
+            double maximum_frequency = 0.0;
 
+            // Get the maximum frequency from the list of frequencies
+            for (ValueDiscrete value : issueValues.keySet())
+                if (issueValues.get(value) > maximum_frequency)
+                    maximum_frequency = issueValues.get(value);
+
+            // Set the issue's evaluation equal to the issues value divided by the maximum frequency
             for (ValueDiscrete value : issueValues.keySet()) {
                 try {
-
-                    int rounds = this.historyBid.size();
-
-                    // Set evaluation to number of times the issue was used divided by the maximum times it was used
-                    getIssuesList()[i].setEvaluationDouble(value, issueValues.get(value) / frequency);
+                    getIssuesList()[i].setEvaluationDouble(value, issueValues.get(value) / maximum_frequency);
                 } catch (Exception error) {
                     System.out.println(error.getMessage());
                 }
@@ -151,38 +159,41 @@ public class OpponentModel {
     }
 
     /**
-     * @return the issues frequency update
+     * @return The array containing the number of times the value
+     * of each issue changed.
      */
-    private int[] getIssueUpdates()
+    private int[] getValueUpdateFrequency()
     {
-        return getIssueUpdates(this.historyBid.size());
+        return getValueUpdateFrequency(this.historyBid.size());
     }
 
     /**
-     * @return the issues frequency update
+     * @return The array containing the number of times the value
+     * of each issue changed given the number of turns.
      */
-    private int[] getIssueUpdates(int rounds) {
+    private int[] getValueUpdateFrequency(int turns) {
 
-        int[] freqUpdate = new int[this.issueTotal]; // the frequency number of each issue
+        // The number of times the value of an issue has changed
+        int[] freqUpdate = new int[this.issueTotal];
 
         for (int i = 0; i < this.issueTotal; i++) {
 
-            Value currVal = null;
-            Value prevRoundVal = null;
+            Value currIssueValue = null; // Current issue value
+            Value prevIssueVal = null; // Previous issue value
 
             int freqNumber = 0;
 
             int historyBidSize = this.historyBid.size()-1;
-            int lastRoundBids = this.historyBid.size() - rounds - 1;
+            int lastRound = this.historyBid.size() - turns - 1;
 
-            // From the bidding history loop through the number of given rounds in reverse
-            for (int j = historyBidSize; j > lastRoundBids; j--){
-                currVal = this.historyBid.getHistory().get(j).getBid().getValue(this.issueIdList[i]);
+            // Given the number of turns, loop through the bidding history starting from the end
+            for (int j = historyBidSize; j > lastRound; j--){
+                currIssueValue = this.historyBid.getHistory().get(j).getBid().getValue(this.issueIdList[i]);
 
                 // Increment frequency number if current value is not the same as the previous value.
-                if (prevRoundVal != null && !prevRoundVal.equals(currVal))  freqNumber++;
+                if (prevIssueVal != null && !prevIssueVal.equals(currIssueValue))  freqNumber++;
 
-                prevRoundVal = currVal;
+                prevIssueVal = currIssueValue;
             }
             freqUpdate[i] = freqNumber;
         }
@@ -190,25 +201,27 @@ public class OpponentModel {
     }
 
     /**
-     * @param rounds The number of rounds to be used
-     * @return 0 for an update in previous turn and 1 for zero changes in bids
+     * @param turns The number of rounds to be used
+     * @return return range 0-1 on how stubborn an agent is
+     * 1 - no updates in bids
+     * 0 - all bids updated
      */
-    public Double hardheaded(int rounds)
+    public Double hardheaded(int turns)
     {
-        // historyBid size must be at least equal to round n#
-        if (this.historyBid.size() < rounds) return null;
+        // history size needs to be smaller than the given number of turns
+        if (this.historyBid.size() < turns) return null;
 
-        int[] freqUpdate = this.getIssueUpdates(rounds);
+        // get the frequency of the update of the issue values.
+        int[] freqUpdate = this.getValueUpdateFrequency(turns);
 
-        int total = 0;
+        int totalUpdates = 0;
         for (int count: freqUpdate){
-            total += count;
+            totalUpdates += count;
         }
 
-        double hardhead = 1 - (total / (double) this.issueTotal) / (double)rounds;
+        // WHY????
+        double hardhead = 1 - (totalUpdates / (double) this.issueTotal) / (double)turns;
 
-        // 1 = hardheaded
-        // 0 = give up
         return hardhead;
     }
 
@@ -226,11 +239,11 @@ public class OpponentModel {
         // Compute the total utility of the opponent's bid
         for (int i = 0; i < this.issueTotal; i++) {
 
-            double weight = getIssuesList()[i].getWeight(); // weight of the issue
-            ValueDiscrete value = (ValueDiscrete) bidVal.get(this.issueIdList[i]); // discrete values
+            double weight = getIssuesList()[i].getWeight(); // weight of the current issue
+            ValueDiscrete bidDiscreteValue = (ValueDiscrete) bidVal.get(this.issueIdList[i]); // discrete values
 
-            if (( getIssuesList()[i]).getValues().contains(value)) {
-                util += getIssuesList()[i].getDoubleValue(value) * weight; // preference of the discrete values
+            if (( getIssuesList()[i]).getValues().contains(bidDiscreteValue)) {
+                util += getIssuesList()[i].getDoubleValue(bidDiscreteValue) * weight; // preference of the discrete values
             }
         }
         return util;
