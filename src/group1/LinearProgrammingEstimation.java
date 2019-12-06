@@ -98,6 +98,7 @@ public class LinearProgrammingEstimation {
         linearConstraintList.add(new LinearConstraint(constant1[constant1.length - 1], Relationship.EQ, constant2[constant2.length - 1]));
 
         SimplexSolver simplexSolver = new SimplexSolver();
+        simplexSolver.setMaxIterations(Integer.MAX_VALUE);
         RealPointValuePair realPointValuePair = simplexSolver.optimize(linearObjectiveFunction, linearConstraintList, GoalType.MINIMIZE, false);
 
         double[] optimality = Arrays.copyOfRange(realPointValuePair.getPoint(), 0, num_variables);

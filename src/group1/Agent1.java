@@ -17,7 +17,9 @@ import genius.core.parties.AbstractNegotiationParty;
 import genius.core.parties.NegotiationInfo;
 import genius.core.uncertainty.AdditiveUtilitySpaceFactory;
 import genius.core.uncertainty.BidRanking;
+import genius.core.uncertainty.ExperimentalUserModel;
 import genius.core.utility.AbstractUtilitySpace;
+import genius.core.utility.UncertainAdditiveUtilitySpace;
 import sun.text.normalizer.Utility;
 
 
@@ -34,7 +36,7 @@ public class Agent1 extends AbstractNegotiationParty
 	 * § SETTINGS (CONSTANTS)
 	 */
 	// The percentage of the time during which the agent will only offer the maximum utility.
-	private final double HARDHEADED_PERCENTAGE = 0.5;
+	private final double HARDHEADED_PERCENTAGE = 0.2;
 
 	// The buffer size of the bestGeneratedBids list.
 	// The maximum amount of bids the agent will save.
@@ -156,7 +158,7 @@ public class Agent1 extends AbstractNegotiationParty
 	private boolean isLastReceivedBidPreferred(Bid generatedBid)
 	{
 		boolean condition1 = this.getUtility(this.lastReceivedBid) >= getUtility(generatedBid);
-		boolean condition2 = this.getUtility(this.lastReceivedBid) > this.getTargetUtility();
+		boolean condition2 = this.getUtility(this.lastReceivedBid) >= this.getTargetUtility();
 
 		return condition1 || condition2;
 	}
