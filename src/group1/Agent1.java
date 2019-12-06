@@ -7,6 +7,7 @@ import java.util.Random;
 
 import genius.core.AgentID;
 import genius.core.Bid;
+import genius.core.Domain;
 import genius.core.actions.Accept;
 import genius.core.actions.Action;
 import genius.core.actions.Offer;
@@ -14,6 +15,8 @@ import genius.core.bidding.BidDetails;
 import genius.core.boaframework.SortedOutcomeSpace;
 import genius.core.parties.AbstractNegotiationParty;
 import genius.core.parties.NegotiationInfo;
+import genius.core.uncertainty.AdditiveUtilitySpaceFactory;
+import genius.core.uncertainty.BidRanking;
 import genius.core.utility.AbstractUtilitySpace;
 
 
@@ -262,7 +265,7 @@ public class Agent1 extends AbstractNegotiationParty
 	 */
 	private double getConcedingFactor()
 	{
-		double hardheadedness = OpponentModel.hardheaded(10);
+		double hardheadedness = opponentModel.hardheaded(10);
 
 		if (this.timeline.getTime() < 0.9)
 			return 13;
@@ -355,7 +358,7 @@ public class Agent1 extends AbstractNegotiationParty
 			AdditiveUtilitySpace additiveUtilitySpace = (AdditiveUtilitySpace) utilitySpace;
 
 			// All ISSUES in the domain
-			List<Issue> issues = additiveUtilitySpace.getDomain().getIssues();
+			List<Issue> issues = additiveUtilitySpace.getDomain().getIssuesList();
 			for (Issue issue: issues) {
 				// WEIGHTS of each issue
 				int issueNumber = issue.getNumber();
