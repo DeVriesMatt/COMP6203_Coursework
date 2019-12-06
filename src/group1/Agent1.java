@@ -34,7 +34,7 @@ public class Agent1 extends AbstractNegotiationParty
 	 * § SETTINGS (CONSTANTS)
 	 */
 	// The percentage of the time during which the agent will only offer the maximum utility.
-	private final double HARDHEADED_PERCENTAGE = 0.2;
+	private final double HARDHEADED_PERCENTAGE = 0.5;
 
 	// The buffer size of the bestGeneratedBids list.
 	// The maximum amount of bids the agent will save.
@@ -129,7 +129,7 @@ public class Agent1 extends AbstractNegotiationParty
 									// Not sure how to get max utility bid estimateUtilitySpace
 									// estimateUtilitySpace.getMaxUtilityBid() not working
 			try {
-				maxUtilityBid = this.utilitySpace.getMaxUtilityBid();
+				maxUtilityBid = maxUtilBidElic;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
