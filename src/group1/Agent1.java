@@ -3,10 +3,7 @@ package group1;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import genius.core.AgentID;
 import genius.core.Bid;
@@ -83,6 +80,8 @@ public class Agent1 extends AbstractNegotiationParty
 
 		this.random = new Random();
 		this.counterOffersMade = 0;
+		this.bestGeneratedBids = new ArrayList<BidDetails>();
+
 
 		// TODO: We need to set up variables for when there is uncertainty
 		if (hasPreferenceUncertainty()){

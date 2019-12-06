@@ -88,10 +88,7 @@ public class OpponentModel {
 
                     double freq = frequencyValues.get(val);
 
-                    // WHY????
-
                     // The weight equals to:
-                    // (frequency number to the power of 2) divided by (number of turns to the power of 2)
                     weightValue[i] +=  Math.pow(freq, 2) / Math.pow(turns, 2);
 
                 } catch (Exception e) {
@@ -211,7 +208,7 @@ public class OpponentModel {
         // history size needs to be smaller than the given number of turns
         if (this.historyBid.size() < turns) return null;
 
-        // get the frequency of the update of the issue values.
+        // get the frequency update of the issue values.
         int[] freqUpdate = this.getValueUpdateFrequency(turns);
 
         int totalUpdates = 0;
@@ -219,7 +216,6 @@ public class OpponentModel {
             totalUpdates += count;
         }
 
-        // WHY????
         double hardhead = 1 - (totalUpdates / (double) this.issueTotal) / (double)turns;
 
         return hardhead;
