@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Redo commenting
+
 public class LinearProgrammingEstimation {
     private BidRanking bidRanking;
     private AdditiveUtilitySpaceFactory additiveUtilitySpaceFactory;

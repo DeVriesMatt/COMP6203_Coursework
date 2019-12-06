@@ -1,5 +1,8 @@
 package group1;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.Random;
 
 import genius.core.AgentID;
 import genius.core.Bid;
+import genius.core.Domain;
 import genius.core.actions.Accept;
 import genius.core.actions.Action;
 import genius.core.actions.Offer;
@@ -14,7 +18,10 @@ import genius.core.bidding.BidDetails;
 import genius.core.boaframework.SortedOutcomeSpace;
 import genius.core.parties.AbstractNegotiationParty;
 import genius.core.parties.NegotiationInfo;
+import genius.core.uncertainty.AdditiveUtilitySpaceFactory;
+import genius.core.uncertainty.BidRanking;
 import genius.core.utility.AbstractUtilitySpace;
+import sun.text.normalizer.Utility;
 
 
 public class Agent1 extends AbstractNegotiationParty
@@ -71,11 +78,31 @@ public class Agent1 extends AbstractNegotiationParty
 	public void init(NegotiationInfo info)
 	{
 		super.init(info);
-
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 		// TODO: why needed? possible with uncertain domain?
-		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace);
+
 		this.random = new Random();
 		this.counterOffersMade = 0;
+
+		// TODO: We need to set up variables for when there is uncertainty
+		if (hasPreferenceUncertainty()){
+			System.out.println("Preference uncertainty is enabled.");
+			AbstractUtilitySpace passedUtilitySpace = info.getUtilitySpace();
+			AbstractUtilitySpace estimatedUtilitySpace = estimateUtilitySpace();
+			estimatedUtilitySpace.setReservationValue(passedUtilitySpace.getReservationValue());
+			estimatedUtilitySpace.setDiscount(passedUtilitySpace.getDiscountFactor());
+			info.setUtilSpace(estimatedUtilitySpace);
+			System.out.println("The elicitation costs are:"+user.getElicitationCost());
+			// AbstractUtilitySpace maxUtilityBid = estimatedUtilitySpace.getMaxUtilityBid(); Ask question in lab
+			// TODO: ?? Question on how to use preference elicitation to get util of specific bid
+		}
+
+		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.estimateUtilitySpace()); // changed to use estimation
+		BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
+		Bid maxBidPossible = maxBidDetailsPossible.getBid(); // TODO: Tester
+		BidDetails minBidPossible = sortedOutcomeSpace.getMaxBidPossible(); //TODO: Tester
+		BidDetails highBid = sortedOutcomeSpace.getBidNearUtility(1); // TODO: Or this??
+		Bid nearOneUtilbid = highBid.getBid(); // TODO: Tester
 	}
 
 	/**
@@ -93,10 +120,15 @@ public class Agent1 extends AbstractNegotiationParty
 	public Action chooseAction(List<Class<? extends Action>> possibleActions)
 	{
 		this.counterOffersMade++;
+		BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
+		Bid maxBidPossible = maxBidDetailsPossible.getBid(); // TODO: ? Check in Lab if this is okay ??
+		// SortedOutcomeSpace uses estimateUtilitySpace
 
 		// Hardheadedness: for first X% of the time, offer maximum utility bid.
 		if (isWithinMaxUtilityBidRange()) {
-			Bid maxUtilityBid = null; // TODO: replace by elicitation
+			Bid maxUtilityBid = maxBidPossible; // TODO: replace by elicitation. Might be done. Need to ask in lab
+									// Not sure how to get max utility bid estimateUtilitySpace
+									// estimateUtilitySpace.getMaxUtilityBid() not working
 			try {
 				maxUtilityBid = this.utilitySpace.getMaxUtilityBid();
 			} catch (Exception e) {
@@ -227,6 +259,7 @@ public class Agent1 extends AbstractNegotiationParty
 		} while (this.getUtility(bid) <= targetUtility);
 		// TODO: this.getUtility(bid) allowed? What does utilityRange formula mean?
 		// TODO: elicit reservation value? Is that available?
+		// TODO: ?? Need to ask questions of how we use out preference elicitation to get the utility of each bid ??
 
 		return bid;
 	}
@@ -290,10 +323,14 @@ public class Agent1 extends AbstractNegotiationParty
 			// If it is the first offer from the opponent, initialise model
 			if (this.opponentModel == null)
 				opponentModel = new OpponentModel(this.generateRandomBid()); // TODO: why generateRandomBid?
+			// TODO: Maybe to start off, otherwise we should look at changing
+			// TODO: to an actual bid received.
 
 			// Store the bid and utility in the opponent history
 			opponentModel.addBid(this.lastReceivedBid);
-			opponentModel.addUtilityHistory(this.lastReceivedBidUtility); // TODO: in original code, why not done if it is a new opponent?
+			opponentModel.addUtilityHistory(this.lastReceivedBidUtility);
+			// TODO: in original code, why not done if it is a new opponent?
+			// TODO:  ?? Not too sure I fully understand, need to ask ??
 		}
 	}
 
