@@ -296,9 +296,9 @@ public class Agent1 extends AbstractNegotiationParty
 		if (this.timeline.getTime() < 0.9)
 			return 13;
 		else if (hardheadedness <= 0.6)
-			return 7;
+			return 10;
 		else
-			return 4;
+			return 7;
 	}
 
 	/**
