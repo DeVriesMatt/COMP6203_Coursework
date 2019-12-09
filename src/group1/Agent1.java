@@ -72,7 +72,7 @@ public class Agent1 extends AbstractNegotiationParty
 	{
 		super.init(info);
 
-		// TODO: why needed? possible with uncertain domain?
+		// TODO: why needed? possible with uncertain domain? ## Yes it is as we override utility space
 		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace);
 		this.random = new Random();
 		this.counterOffersMade = 0;
@@ -93,7 +93,7 @@ public class Agent1 extends AbstractNegotiationParty
 //			// TODO: ?? Question on how to use preference elicitation to get util of specific bid
 //		}
 
-		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace); // changed to use estimation
+		// this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace); // changed to use estimation
 		// Maybe look at taking sorted outcome space out and only sort using the bidranking we have and offer the best of those
 
 //		BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
@@ -150,7 +150,7 @@ public class Agent1 extends AbstractNegotiationParty
 	 */
 	private boolean isLastReceivedBidPreferred(Bid generatedBid)
 	{
-		
+
 
 		boolean condition1 = this.getUtility(this.lastReceivedBid) >= getUtility(generatedBid);  // LastRecievedbid might be null
 		boolean condition2 = this.getUtility(this.lastReceivedBid) >= this.getTargetUtility();
