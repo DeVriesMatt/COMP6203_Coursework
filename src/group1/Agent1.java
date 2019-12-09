@@ -42,7 +42,7 @@ public class Agent1 extends AbstractNegotiationParty
 	// The frequency for recalculating the nash product with the best saved bids from the opponent.
 	private final int FREQUENCY_RECALCULATE_NASH_PRODUCT = 10;
 
-	private final double KA_MINIMUM_STARTING_TARGET_UTILITY = 0.9;
+	private final double KA_MINIMUM_STARTING_TARGET_UTILITY = 0.85;
 
 	/**
 	 * § BIDDING VARIABLES
@@ -76,6 +76,33 @@ public class Agent1 extends AbstractNegotiationParty
 		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace);
 		this.random = new Random();
 		this.counterOffersMade = 0;
+<<<<<<< Updated upstream
+=======
+		this.bestGeneratedBids = new ArrayList<BidDetails>();
+
+
+		// TODO: We need to set up variables for when there is uncertainty
+//		if (hasPreferenceUncertainty()){
+////			System.out.println("Preference uncertainty is enabled.");
+////			AbstractUtilitySpace passedUtilitySpace = info.getUtilitySpace();
+////			AbstractUtilitySpace estimatedUtilitySpace = estimateUtilitySpace();
+////			estimatedUtilitySpace.setReservationValue(passedUtilitySpace.getReservationValue());
+////			estimatedUtilitySpace.setDiscount(passedUtilitySpace.getDiscountFactor());
+////			info.setUtilSpace(estimatedUtilitySpace);
+////			System.out.println("The elicitation costs are:"+user.getElicitationCost());
+//			// AbstractUtilitySpace maxUtilityBid = estimatedUtilitySpace.getMaxUtilityBid(); Ask question in lab
+//			// TODO: ?? Question on how to use preference elicitation to get util of specific bid
+//		}
+
+		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace); // changed to use estimation
+		// Maybe look at taking sorted outcome space out and only sort using the bidranking we have and offer the best of those
+
+//		BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
+//		Bid maxBidPossible = maxBidDetailsPossible.getBid(); // TODO: Tester
+//		BidDetails minBidPossible = sortedOutcomeSpace.getMaxBidPossible(); //TODO: Tester
+//		BidDetails highBid = sortedOutcomeSpace.getBidNearUtility(1); // TODO: Or this??
+//		Bid nearOneUtilbid = highBid.getBid(); // TODO: Tester
+>>>>>>> Stashed changes
 	}
 
 	/**
@@ -90,7 +117,7 @@ public class Agent1 extends AbstractNegotiationParty
 	 * Choose an action from the possibleActions list (ACCEPT / COUNTEROFFER / END)
 	 */
 	@Override
-	public Action chooseAction(List<Class<? extends Action>> possibleActions)
+	public Action chooseAction(List<Class<? extends Action>> possibleActions)  // depends on lastReceivedBid which might be null
 	{
 		this.counterOffersMade++;
 
@@ -124,8 +151,13 @@ public class Agent1 extends AbstractNegotiationParty
 	 */
 	private boolean isLastReceivedBidPreferred(Bid generatedBid)
 	{
+<<<<<<< Updated upstream
 		boolean condition1 = this.getUtility(this.lastReceivedBid) >= getUtility(generatedBid);
 		boolean condition2 = this.getUtility(this.lastReceivedBid) > this.getTargetUtility();
+=======
+		boolean condition1 = this.getUtility(this.lastReceivedBid) >= getUtility(generatedBid);  // LastRecievedbid might be null
+		boolean condition2 = this.getUtility(this.lastReceivedBid) >= this.getTargetUtility();
+>>>>>>> Stashed changes
 
 		return condition1 || condition2;
 	}
@@ -138,7 +170,7 @@ public class Agent1 extends AbstractNegotiationParty
 		double targetUtility = this.getTargetUtility();
 
 		Bid randomBid;
-		Bid bestBid = this.generateRandomBidAboveTarget(targetUtility);
+		Bid bestBid = this.generateRandomBidAboveTarget(targetUtility);  // Check if not null
 
 		double nashProduct;
 		double bestNashProduct = Double.MIN_VALUE;
@@ -222,8 +254,8 @@ public class Agent1 extends AbstractNegotiationParty
 
 		do {
 			double random = this.random.nextDouble();
-			double utilityRange = targetUtility + random * (1.0 - targetUtility);
-			bid = sortedOutcomeSpace.getBidNearUtility(utilityRange).getBid();
+			double utilityRange = targetUtility + random * (1.0 - targetUtility);  // Enrico said change
+			bid = sortedOutcomeSpace.getBidNearUtility(utilityRange).getBid(); // Change not efficient and may time out
 		} while (this.getUtility(bid) <= targetUtility);
 		// TODO: this.getUtility(bid) allowed? What does utilityRange formula mean?
 		// TODO: elicit reservation value? Is that available?
@@ -267,9 +299,9 @@ public class Agent1 extends AbstractNegotiationParty
 		if (this.timeline.getTime() < 0.9)
 			return 13;
 		else if (hardheadedness <= 0.6)
-			return 10;
-		else
 			return 7;
+		else
+			return 4;
 	}
 
 	/**
@@ -313,7 +345,7 @@ public class Agent1 extends AbstractNegotiationParty
 	public AbstractUtilitySpace estimateUtilitySpace()
 	{
 		Domain domain = getDomain();
-		BidRanking bidRanking = getUserModel().getBidRanking();
+		BidRanking bidRanking = userModel.getBidRanking(); // changed to userModel.getBidRanking
 		LinearProgrammingEstimation linearProgrammingEstimation = new LinearProgrammingEstimation(domain, bidRanking);
 		AdditiveUtilitySpaceFactory additiveUtilitySpaceFactory;
 
