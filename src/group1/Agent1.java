@@ -1,12 +1,10 @@
 package group1;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import genius.core.AgentID;
 import genius.core.Bid;
+import genius.core.Domain;
 import genius.core.actions.Accept;
 import genius.core.actions.Action;
 import genius.core.actions.Offer;
@@ -14,6 +12,8 @@ import genius.core.bidding.BidDetails;
 import genius.core.boaframework.SortedOutcomeSpace;
 import genius.core.parties.AbstractNegotiationParty;
 import genius.core.parties.NegotiationInfo;
+import genius.core.uncertainty.AdditiveUtilitySpaceFactory;
+import genius.core.uncertainty.BidRanking;
 import genius.core.utility.AbstractUtilitySpace;
 
 
@@ -76,8 +76,7 @@ public class Agent1 extends AbstractNegotiationParty
 		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace);
 		this.random = new Random();
 		this.counterOffersMade = 0;
-<<<<<<< Updated upstream
-=======
+
 		this.bestGeneratedBids = new ArrayList<BidDetails>();
 
 
@@ -102,7 +101,7 @@ public class Agent1 extends AbstractNegotiationParty
 //		BidDetails minBidPossible = sortedOutcomeSpace.getMaxBidPossible(); //TODO: Tester
 //		BidDetails highBid = sortedOutcomeSpace.getBidNearUtility(1); // TODO: Or this??
 //		Bid nearOneUtilbid = highBid.getBid(); // TODO: Tester
->>>>>>> Stashed changes
+
 	}
 
 	/**
@@ -151,13 +150,11 @@ public class Agent1 extends AbstractNegotiationParty
 	 */
 	private boolean isLastReceivedBidPreferred(Bid generatedBid)
 	{
-<<<<<<< Updated upstream
-		boolean condition1 = this.getUtility(this.lastReceivedBid) >= getUtility(generatedBid);
-		boolean condition2 = this.getUtility(this.lastReceivedBid) > this.getTargetUtility();
-=======
+		
+
 		boolean condition1 = this.getUtility(this.lastReceivedBid) >= getUtility(generatedBid);  // LastRecievedbid might be null
 		boolean condition2 = this.getUtility(this.lastReceivedBid) >= this.getTargetUtility();
->>>>>>> Stashed changes
+
 
 		return condition1 || condition2;
 	}
