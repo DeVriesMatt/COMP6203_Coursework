@@ -10,6 +10,11 @@ import genius.core.issue.ValueDiscrete;
 import genius.core.uncertainty.AdditiveUtilitySpaceFactory;
 import genius.core.uncertainty.BidRanking;
 import genius.core.uncertainty.OutcomeComparison;
+import scpsolver.constraints.LinearBiggerThanEqualsConstraint;
+import scpsolver.constraints.LinearEqualsConstraint;
+import scpsolver.lpsolver.LinearProgramSolver;
+import scpsolver.lpsolver.SolverFactory;
+import scpsolver.problems.LinearProgram;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,10 +54,10 @@ public class LinearProgrammingEstimation {
             num_variables += i.getNumberOfValues();
         }
         cumulative_sum[cumulative_sum.length - 1] = num_variables;
-        double[][] constant1 = new double[num_variables + num_components*2 + 2][num_variables + num_components];
-        double[] constant2 = new double[num_variables + num_components*2 + 2];
+        double[][] constraint1 = new double[num_variables + num_components*2 + 2][num_variables + num_components];
+        double[] constraint2 = new double[num_variables + num_components*2 + 2];
         double[] objective3 = new double[num_variables + num_components];
-        Arrays.fill(constant2, 0.0D);
+        Arrays.fill(constraint2, 0.0D);
         Arrays.fill(objective3, 0.0D);
         for (int i = 0; i < num_components; i++){
             objective3[num_variables + i] = 1.0D;
@@ -66,42 +71,41 @@ public class LinearProgrammingEstimation {
             for (IssueDiscrete issueDiscrete : issueDiscreteList){
                 int iter = issueDiscrete.getNumber() - 1;
                 if(!lower_bid.getValue(issueDiscrete).equals(higher_bid.getValue(issueDiscrete))){
-                    constant1[position][cumulative_sum[iter] + issueDiscrete.getValueIndex(lower_bid.getValue(issueDiscrete).toString())] = -1.0D;
-                    constant1[position][cumulative_sum[iter] + issueDiscrete.getValueIndex(higher_bid.getValue(issueDiscrete).toString())] = 1.0D;
+                    constraint1[position][cumulative_sum[iter] + issueDiscrete.getValueIndex(lower_bid.getValue(issueDiscrete).toString())] = -1.0D;
+                    constraint1[position][cumulative_sum[iter] + issueDiscrete.getValueIndex(higher_bid.getValue(issueDiscrete).toString())] = 1.0D;
 
                 }
             }
-            constant1[position][num_variables + position] = 1.0D;
+            constraint1[position][num_variables + position] = 1.0D;
             position++;
         }
 
         for (int i = 0; i < num_variables + num_components; i++){
-            constant1[position++][i] = 1.00D;
+            constraint1[position++][i] = 1.00D;
         }
 
         for (IssueDiscrete issueDiscrete: issueDiscreteList){
             int iter = issueDiscrete.getNumber() - 1;
-            constant1[position][cumulative_sum[iter] + issueDiscrete.getValueIndex(bidRanking.getMaximalBid().getValue(issueDiscrete).toString())] = 1.0D;
-            constant1[position+1][cumulative_sum[iter] + issueDiscrete.getValueIndex(bidRanking.getMinimalBid().getValue(issueDiscrete).toString())] = 1.0D;
+            constraint1[position][cumulative_sum[iter] + issueDiscrete.getValueIndex(bidRanking.getMaximalBid().getValue(issueDiscrete).toString())] = 1.0D;
+            constraint1[position+1][cumulative_sum[iter] + issueDiscrete.getValueIndex(bidRanking.getMinimalBid().getValue(issueDiscrete).toString())] = 1.0D;
 
         }
-        constant2[position] = highest_utility;
-        constant2[position + 1] = lowest_utility;
+        constraint2[position] = highest_utility;
+        constraint2[position + 1] = lowest_utility;
 
-        LinearObjectiveFunction linearObjectiveFunction = new LinearObjectiveFunction(objective3, 0.0D);
-        List<LinearConstraint> linearConstraintList = new ArrayList<>();
-        for (int i = 0; i < constant1.length - 2; i++){
-            linearConstraintList.add(new LinearConstraint(constant1[i], Relationship.GEQ, constant2[i]));
+        LinearProgram linearProgram = new LinearProgram(objective3);
 
+        for (int i = 0; i < constraint1.length - 2; i++){
+            linearProgram.addConstraint(new LinearBiggerThanEqualsConstraint(constraint1[i], constraint2[i], ("c" + i + 1))); // Check empty string
         }
-        linearConstraintList.add(new LinearConstraint(constant1[constant1.length - 2], Relationship.EQ, constant2[constant2.length - 2]));
-        linearConstraintList.add(new LinearConstraint(constant1[constant1.length - 1], Relationship.EQ, constant2[constant2.length - 1]));
 
-        SimplexSolver simplexSolver = new SimplexSolver();
-        simplexSolver.setMaxIterations(Integer.MAX_VALUE);
-        RealPointValuePair realPointValuePair = simplexSolver.optimize(linearObjectiveFunction, linearConstraintList, GoalType.MINIMIZE, false);
+        linearProgram.addConstraint(new LinearEqualsConstraint(constraint1[constraint1.length - 2], constraint2[constraint2.length - 2], "c" + (constraint2.length - 1)));
+        linearProgram.addConstraint(new LinearEqualsConstraint(constraint1[constraint1.length - 1], constraint2[constraint2.length - 1], "c" + (constraint2.length)));
+        linearProgram.setMinProblem(true);
+        LinearProgramSolver solver  = SolverFactory.newDefault();
+        double[] optimality = solver.solve(linearProgram);
 
-        double[] optimality = Arrays.copyOfRange(realPointValuePair.getPoint(), 0, num_variables);
+
         for (int i = 0; i < optimality.length; i++){
             optimality[i] = Math.max(0.0D, optimality[i]);
         }
@@ -124,7 +128,10 @@ public class LinearProgrammingEstimation {
         }
         additiveUtilitySpaceFactory.normalizeWeights();
 
+
+
         return  additiveUtilitySpaceFactory;
+
 
 
     }

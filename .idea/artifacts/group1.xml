@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="group1">
+    <output-path>$PROJECT_DIR$/out/artifacts/group1</output-path>
+    <root id="archive" name="group1.jar">
+      <element id="directory" name="group1">
+        <element id="file-copy" path="$PROJECT_DIR$/src/group1/Agent1.java" />
+        <element id="file-copy" path="$PROJECT_DIR$/src/group1/LinearProgrammingEstimation.java" />
+        <element id="file-copy" path="$PROJECT_DIR$/src/group1/OpponentModel.java" />
+        <element id="file-copy" path="$PROJECT_DIR$/out/production/IA_Coursework/group1/Agent1.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/out/production/IA_Coursework/group1/Agent1$1.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/out/production/IA_Coursework/group1/LinearProgrammingEstimation.class" />
+        <element id="file-copy" path="$PROJECT_DIR$/out/production/IA_Coursework/group1/OpponentModel.class" />
+      </element>
+    </root>
+  </artifact>
+</component>
