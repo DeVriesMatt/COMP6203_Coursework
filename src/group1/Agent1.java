@@ -44,7 +44,7 @@ public class Agent1 extends AbstractNegotiationParty
 	private final int MAX_BEST_BIDS_BUFFER_SIZE = 100;
 
 	// The number of bids to generate each round to populate the bestGeneratedBids array.
-	private final int AMOUNT_OF_BIDS_TO_GENERATE = 100;
+	private final int AMOUNT_OF_BIDS_TO_GENERATE = 10;
 
 	// The frequency for recalculating the nash product with the best saved bids from the opponent.
 	private final int FREQUENCY_RECALCULATE_NASH_PRODUCT = 10;
@@ -123,21 +123,19 @@ public class Agent1 extends AbstractNegotiationParty
 	/**
 	 * Choose an action from the possibleActions list (ACCEPT / COUNTEROFFER / END)
 	 */
+	/**
+	 * Choose an action from the possibleActions list (ACCEPT / COUNTEROFFER / END)
+	 */
 	@Override
 	public Action chooseAction(List<Class<? extends Action>> possibleActions)  // depends on lastReceivedBid which might be null
 	{
 		this.counterOffersMade++;
-		// BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
-		Bid maxUtilBidElic = getUserModel().getBidRanking().getMaximalBid(); // TODO: ? Check in Lab if this is okay ??
-		// SortedOutcomeSpace uses estimateUtilitySpace
 
 		// Hardheadedness: for first X% of the time, offer maximum utility bid.
 		if (isWithinMaxUtilityBidRange()) {
-
 			Bid maxUtilityBid = userModel.getBidRanking().getMaximalBid(); // TODO: replace by elicitation
-
 			try {
-				maxUtilityBid = maxUtilBidElic;
+				maxUtilityBid = this.utilitySpace.getMaxUtilityBid();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
