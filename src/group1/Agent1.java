@@ -1,5 +1,8 @@
 package group1;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 import genius.core.AgentID;
@@ -78,6 +81,7 @@ public class Agent1 extends AbstractNegotiationParty
 		this.counterOffersMade = 0;
 
 		this.bestGeneratedBids = new ArrayList<BidDetails>();
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
 
 		// TODO: We need to set up variables for when there is uncertainty
@@ -122,13 +126,15 @@ public class Agent1 extends AbstractNegotiationParty
 
 		// Hardheadedness: for first X% of the time, offer maximum utility bid.
 		if (isWithinMaxUtilityBidRange()) {
-			Bid maxUtilityBid = null; // TODO: replace by elicitation
+			Bid maxUtilityBid = userModel.getBidRanking().getMaximalBid(); // TODO: replace by elicitation
 			try {
 				maxUtilityBid = this.utilitySpace.getMaxUtilityBid();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			System.out.println(maxUtilityBid);
 			return new Offer(getPartyId(), maxUtilityBid);
+
 		}
 
 		// Otherwise, create bid above target utility
@@ -341,6 +347,8 @@ public class Agent1 extends AbstractNegotiationParty
 	@Override
 	public AbstractUtilitySpace estimateUtilitySpace()
 	{
+		//return new AdditiveUtilitySpaceFactory(getDomain()).getUtilitySpace();
+
 		Domain domain = getDomain();
 		BidRanking bidRanking = userModel.getBidRanking(); // changed to userModel.getBidRanking
 		LinearProgrammingEstimation linearProgrammingEstimation = new LinearProgrammingEstimation(domain, bidRanking);
