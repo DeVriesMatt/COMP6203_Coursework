@@ -91,32 +91,32 @@ public class LinearProgrammingEstimation {
         constraint2[position] = highest_utility;
         constraint2[position + 1] = lowest_utility;
 
-        LinearObjectiveFunction linearObjectiveFunction = new LinearObjectiveFunction(objective3, 0.0D);
-        List<LinearConstraint> linearConstraintList = new ArrayList<>();
-        for (int i = 0; i < constraint1.length - 2; i++){
-            linearConstraintList.add(new LinearConstraint(constraint1[i], Relationship.GEQ, constraint2[i]));
-
-        }
-        linearConstraintList.add(new LinearConstraint(constraint1[constraint1.length - 2], Relationship.EQ, constraint2[constraint2.length - 2]));
-        linearConstraintList.add(new LinearConstraint(constraint1[constraint1.length - 1], Relationship.EQ, constraint2[constraint2.length - 1]));
-
-        SimplexSolver simplexSolver = new SimplexSolver();
-        simplexSolver.setMaxIterations(1000);
-        RealPointValuePair realPointValuePair = simplexSolver.optimize(linearObjectiveFunction, linearConstraintList, GoalType.MINIMIZE, false);
-        double[] optimality = Arrays.copyOfRange(realPointValuePair.getPoint(), 0, num_variables);
+//        LinearObjectiveFunction linearObjectiveFunction = new LinearObjectiveFunction(objective3, 0.0D);
+//        List<LinearConstraint> linearConstraintList = new ArrayList<>();
+//        for (int i = 0; i < constraint1.length - 2; i++){
+//            linearConstraintList.add(new LinearConstraint(constraint1[i], Relationship.GEQ, constraint2[i]));
+//
+//        }
+//        linearConstraintList.add(new LinearConstraint(constraint1[constraint1.length - 2], Relationship.EQ, constraint2[constraint2.length - 2]));
+//        linearConstraintList.add(new LinearConstraint(constraint1[constraint1.length - 1], Relationship.EQ, constraint2[constraint2.length - 1]));
+//
+//        SimplexSolver simplexSolver = new SimplexSolver();
+//        simplexSolver.setMaxIterations(1000);
+//        RealPointValuePair realPointValuePair = simplexSolver.optimize(linearObjectiveFunction, linearConstraintList, GoalType.MINIMIZE, false);
+//        double[] optimality = Arrays.copyOfRange(realPointValuePair.getPoint(), 0, num_variables);
         // #####################################################################################
         // Trying SCPSolver
-//        LinearProgram linearProgram = new LinearProgram(objective3);
-//        // List<LinearBiggerThanEqualsConstraint> linearConstraintList = new ArrayList<>();
-//        for (int i = 0; i < constraint1.length - 2; i++){
-//            linearProgram.addConstraint(new LinearBiggerThanEqualsConstraint(constraint1[i], constraint2[i], System.out.format("%d%i", i).toString())); // Check empty string
-//        }
-//
-//        linearProgram.addConstraint(new LinearEqualsConstraint(constraint1[constraint1.length - 2], constraint2[constraint2.length - 2], "c1"));
-//        linearProgram.addConstraint(new LinearEqualsConstraint(constraint1[constraint1.length - 1], constraint2[constraint2.length - 1], "c2"));
-//        linearProgram.setMinProblem(true);
-//        LinearProgramSolver solver  = SolverFactory.newDefault();
-//        double[] optimality = solver.solve(linearProgram);
+        LinearProgram linearProgram = new LinearProgram(objective3);
+        // List<LinearBiggerThanEqualsConstraint> linearConstraintList = new ArrayList<>();
+        for (int i = 0; i < constraint1.length - 2; i++){
+            linearProgram.addConstraint(new LinearBiggerThanEqualsConstraint(constraint1[i], constraint2[i], ("c" + i + 1))); // Check empty string
+        }
+
+        linearProgram.addConstraint(new LinearEqualsConstraint(constraint1[constraint1.length - 2], constraint2[constraint2.length - 2], "c" + (constraint2.length - 1)));
+        linearProgram.addConstraint(new LinearEqualsConstraint(constraint1[constraint1.length - 1], constraint2[constraint2.length - 1], "c" + (constraint2.length)));
+        linearProgram.setMinProblem(true);
+        LinearProgramSolver solver  = SolverFactory.newDefault();
+        double[] optimality = solver.solve(linearProgram);
 //        // ######################################################################################
 //        System.out.println(optimality);
 

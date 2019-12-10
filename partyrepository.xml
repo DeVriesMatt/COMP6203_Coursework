@@ -387,6 +387,9 @@
             <partyRepItem classPath="/Users/matthewdevries/Desktop/IA_GitDesktop/COMP6203_Coursework/out/production/IA_Coursework/group1/Agent1.class" strategyParameters="">
                 <properties/>
             </partyRepItem>
+            <partyRepItem classPath="/Users/imakethingz/IdeaProjects/COMP6203_Coursework/out/production/IA_Coursework/group1/Agent1.class" strategyParameters="">
+                <properties/>
+            </partyRepItem>
         </partyRepItems>
         <domainRepItem/>
         <protocolRepItem/>

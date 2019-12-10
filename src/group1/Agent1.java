@@ -253,11 +253,12 @@ public class Agent1 extends AbstractNegotiationParty
 	 */
 	private Bid generateRandomBidAboveTarget(double targetUtility)
 	{
+
 		Bid bid;
 
 		do {
 			double random = this.random.nextDouble();
-			double utilityRange = targetUtility + random * (1.0 - targetUtility);  // Enrico said change
+			double utilityRange = targetUtility +  random * (1.0 - targetUtility);  // Enrico said change
 			bid = sortedOutcomeSpace.getBidNearUtility(utilityRange).getBid(); // Change not efficient and may time out
 		} while (this.getUtility(bid) <= targetUtility);
 		// TODO: this.getUtility(bid) allowed? What does utilityRange formula mean?
@@ -297,7 +298,7 @@ public class Agent1 extends AbstractNegotiationParty
 	 */
 	private double getConcedingFactor()
 	{
-		double hardheadedness = OpponentModel.hardheaded(10);
+		double hardheadedness = opponentModel.hardheaded(10);
 
 		if (this.timeline.getTime() < 0.9)
 			return 13;

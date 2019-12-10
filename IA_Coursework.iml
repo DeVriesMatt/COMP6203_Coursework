@@ -10,5 +10,6 @@
     <orderEntry type="library" name="GLPKSolverPack" level="project" />
     <orderEntry type="library" name="SCPSolver" level="project" />
     <orderEntry type="library" name="genius-9.1" level="project" />
+    <orderEntry type="library" name="LPSOLVESolverPack" level="project" />
   </component>
 </module>
