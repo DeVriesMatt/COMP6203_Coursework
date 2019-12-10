@@ -1,7 +1,0 @@
-<?xml version="1.0" ?><Session>
-<NegotiationOutcome exception="Failed to execute protocol: Execution failed of Agent1@3:java.lang.NullPointerException: bid can not be null: bid can not be null" currentTime="Tue Dec 10 00:41:47 GMT 2019" lastAction="(Offer  bid:Bid[Food: Handmade Food, Drinks: Beer Only, Location: Party Room, Invitations: Custom, Handmade, Music: DJ, Cleanup: Hired Help])" bids="1" runtime="0.055106743" deadline="60s">
-<resultsOfAgent agent="BoulwareNegotiationParty" utilspace="etc/templates/partydomain/party1_utility.xml" agentClass="negotiator.parties.BoulwareNegotiationParty" finalUtility="0.0" discountedUtility="0.0" discount="1.0">
-</resultsOfAgent>
-<resultsOfAgent agent="Agent1" utilspace="etc/templates/partydomain/party2_utility.xml" agentClass="/Users/matthewdevries/Desktop/IA_GitDesktop/COMP6203_Coursework/out/production/IA_Coursework/group1/Agent1.class" finalUtility="0.0" discountedUtility="0.0" discount="1.0">
-</resultsOfAgent>
-</NegotiationOutcome></Session>
