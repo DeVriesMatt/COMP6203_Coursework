@@ -44,7 +44,7 @@ public class Agent1 extends AbstractNegotiationParty
 	private final int MAX_BEST_BIDS_BUFFER_SIZE = 100;
 
 	// The number of bids to generate each round to populate the bestGeneratedBids array.
-	private final int AMOUNT_OF_BIDS_TO_GENERATE = 10;
+	private final int AMOUNT_OF_BIDS_TO_GENERATE = 100;
 
 	// The frequency for recalculating the nash product with the best saved bids from the opponent.
 	private final int FREQUENCY_RECALCULATE_NASH_PRODUCT = 10;
