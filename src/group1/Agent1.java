@@ -162,7 +162,7 @@ public class Agent1 extends AbstractNegotiationParty
 			this.updateNashProduct();
 
 
-		// TODO: mistake in original code: for (int i = 0; i < this.AMOUNT_OF_BIDS_TO_GENERATE; i++) {?
+
 		// Generate random bids and keep the one with the best nash product.
 		for (int i = 0; i < this.AMOUNT_OF_BIDS_TO_GENERATE; i++) {
 			randomBid = this.generateRandomBidAboveTarget(targetUtility);
