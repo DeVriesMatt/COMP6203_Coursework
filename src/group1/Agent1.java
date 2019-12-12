@@ -85,7 +85,7 @@ public class Agent1 extends AbstractNegotiationParty
 		this.counterOffersMade = 0;
 
 		this.bestGeneratedBids = new ArrayList<BidDetails>();
-		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+//		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
 
 		// TODO: We need to set up variables for when there is uncertainty
@@ -139,7 +139,7 @@ public class Agent1 extends AbstractNegotiationParty
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(maxUtilityBid);
+//			System.out.println(maxUtilityBid);
 			return new Offer(getPartyId(), maxUtilityBid);
 
 		}
