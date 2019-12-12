@@ -85,31 +85,6 @@ public class Agent1 extends AbstractNegotiationParty
 		this.counterOffersMade = 0;
 
 		this.bestGeneratedBids = new ArrayList<BidDetails>();
-//		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-
-
-		// TODO: We need to set up variables for when there is uncertainty
-//		if (hasPreferenceUncertainty()){
-////			System.out.println("Preference uncertainty is enabled.");
-////			AbstractUtilitySpace passedUtilitySpace = info.getUtilitySpace();
-////			AbstractUtilitySpace estimatedUtilitySpace = estimateUtilitySpace();
-////			estimatedUtilitySpace.setReservationValue(passedUtilitySpace.getReservationValue());
-////			estimatedUtilitySpace.setDiscount(passedUtilitySpace.getDiscountFactor());
-////			info.setUtilSpace(estimatedUtilitySpace);
-////			System.out.println("The elicitation costs are:"+user.getElicitationCost());
-//			// AbstractUtilitySpace maxUtilityBid = estimatedUtilitySpace.getMaxUtilityBid(); Ask question in lab
-//			// TODO: ?? Question on how to use preference elicitation to get util of specific bid
-//		}
-
-		// this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace); // changed to use estimation
-		// Maybe look at taking sorted outcome space out and only sort using the bidranking we have and offer the best of those
-
-//		BidDetails maxBidDetailsPossible = sortedOutcomeSpace.getMaxBidPossible(); // TODO: ? Do we use this ?
-//		Bid maxBidPossible = maxBidDetailsPossible.getBid(); // TODO: Tester
-//		BidDetails minBidPossible = sortedOutcomeSpace.getMaxBidPossible(); //TODO: Tester
-//		BidDetails highBid = sortedOutcomeSpace.getBidNearUtility(1); // TODO: Or this??
-//		Bid nearOneUtilbid = highBid.getBid(); // TODO: Tester
-
 	}
 
 	/**
@@ -373,58 +348,4 @@ public class Agent1 extends AbstractNegotiationParty
 		}
 		return additiveUtilitySpaceFactory.getUtilitySpace();
 	}
-
-
-	/**
-	 * § SUPPLEMENTARY DEBUGGING CODE
-	 */
-
-	/**
-	 * Initializes a new instance of the agent.
-	 * + Prints the domain.
-	 */
-	/*
-	@Override
-	public void init(NegotiationInfo info)
-	{
-		super.init(info);
-
-		// TO DO: why needed? possible with uncertain domain?
-		this.sortedOutcomeSpace = new SortedOutcomeSpace(this.utilitySpace);
-		this.random = new Random();
-
-		// Print the domain
-		// TO DO: replace with uncertainUtilitySpace
-		if (false) {
-			// UtilitySpace contains DOMAIN and PREFERENCE PROFILE
-			// We use implementation called AdditiveUtilitySpace
-			AbstractUtilitySpace utilitySpace = info.getUtilitySpace();
-			AdditiveUtilitySpace additiveUtilitySpace = (AdditiveUtilitySpace) utilitySpace;
-
-			// All ISSUES in the domain
-			List<Issue> issues = additiveUtilitySpace.getDomain().getIssuesList();
-			for (Issue issue: issues) {
-				// WEIGHTS of each issue
-				int issueNumber = issue.getNumber();
-				String issueName = issue.getName();
-				double issueWeight = additiveUtilitySpace.getWeight(issueNumber);
-
-				// Assuming DISCRETE issues, get EVALUATION FUNCTION of each issue
-				IssueDiscrete issueDiscrete = (IssueDiscrete) issue;
-				EvaluatorDiscrete evaluatorDiscrete = (EvaluatorDiscrete) additiveUtilitySpace.getEvaluator(issueNumber);
-
-				// For every possible VALUE of the issue, get EVALUATION
-				for (ValueDiscrete valueDiscrete : issueDiscrete.getValues()) {
-					String value = valueDiscrete.getValue(); // NAME of the value (256GB)
-					Integer valueByEvaluationFunction = evaluatorDiscrete.getValue(valueDiscrete); // value (6)
-					try {
-						Double evaluationOfIssueValue = evaluatorDiscrete.getEvaluation(valueDiscrete); // evaluation (0.6)
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}
-	*/
 }
