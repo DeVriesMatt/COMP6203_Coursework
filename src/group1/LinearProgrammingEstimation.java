@@ -1,8 +1,5 @@
 package group1;
 
-import agents.org.apache.commons.math.optimization.linear.*;
-import agents.org.apache.commons.math.optimization.GoalType;
-import agents.org.apache.commons.math.optimization.RealPointValuePair;
 import genius.core.Bid;
 import genius.core.Domain;
 import genius.core.issue.IssueDiscrete;
@@ -16,7 +13,6 @@ import scpsolver.lpsolver.LinearProgramSolver;
 import scpsolver.lpsolver.SolverFactory;
 import scpsolver.problems.LinearProgram;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
